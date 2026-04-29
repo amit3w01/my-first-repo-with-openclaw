@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        #timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #1a73e8;
+            margin: 1rem 0;
+        }
+        #message {
+            font-size: 2rem;
+            color: #d93025;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Birthday Timer</h1>
+        <p>Set the time (HH:MM:SS):</p>
+        <input type="time" id="targetTime" step="1">
+        <div id="timer">00:00:00</div>
+        <div id="message">🎂 Happy Birthday! 🥳</div>
+    </div>
+
+    <script>
+        const input = document.getElementById('targetTime');
+        const timerDisplay = document.getElementById('timer');
+        const messageDisplay = document.getElementById('message');
+
+        function updateTimer() {
+            if (!input.value) return;
+
+            const now = new Date();
+            const [hours, minutes, seconds] = input.value.split(':');
+            const target = new Date();
+            target.setHours(hours, minutes, seconds || 0, 0);
+
+            // If time is already past today, assume tomorrow
+            if (target < now) {
+                target.setDate(target.getDate() + 1);
+            }
+
+            const diff = target - now;
+
+            if (diff <= 0) {
+                timerDisplay.style.display = 'none';
+                messageDisplay.style.display = 'block';
+                return;
+            }
+
+            messageDisplay.style.display = 'none';
+            timerDisplay.style.display = 'block';
+
+            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            
+            timerDisplay.textContent = `${h}:${m}:${s}`;
+        }
+
+        input.addEventListener('change', updateTimer);
+        setInterval(updateTimer, 1000);
+    </script>
+</body>
+</html>
